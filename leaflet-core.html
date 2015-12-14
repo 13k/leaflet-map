@@ -613,7 +613,20 @@ add a marker with a popup text.
 		    	 type: Boolean,
 		    	 value: false,
 		    	 observer: '_fitToMarkers'
-		     }
+		     },
+
+			/**
+			 * The `crs` attribute specifies the Coordinate Reference System to use. Don't change this if you're not sure what it means.
+			 *
+			 * @attribute crs
+			 * @type string
+			 * @default EPSG3857
+			 */
+			crs: {
+				type: String,
+				value: 'EPSG3857',
+				observer: '_crs'
+			}
 		},
 
 		/**
@@ -678,10 +691,11 @@ add a marker with a popup text.
 				inertiaMaxSpeed: this.inertiaMaxSpeed,
 				zoomControl: !this.noZoomControl,
 				attributionControl: !this.noAttributionControl,
-				zoomAnimationThreshold: this.zoomAnimationThreshold
+				zoomAnimationThreshold: this.zoomAnimationThreshold,
+				crs: this.__crs
 			});
 			this.map = map;
-			
+
 			// fire an event for when this.map is defined and ready.
 			// (needed for components that talk to this.map directly)
 			this.fire('map-ready');
@@ -757,6 +771,12 @@ add a marker with a popup text.
 					this.map.fitBounds( bounds );
 					this.map.invalidateSize();
 				}
+			}
+		},
+
+		_crs: function () {
+			if (L.CRS.hasOwnProperty(this.crs)) {
+				this.__crs = L.CRS[this.crs];
 			}
 		},
 
